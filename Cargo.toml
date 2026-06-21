@@ -1,0 +1,15 @@
+[package]
+name = "discoring"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serenity = { version = "0.12", default-features = false, features = [
+    "client",
+    "gateway",
+    "rustls_backend",
+    "model",
+    "cache",
+] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+dotenv = "0.15"
