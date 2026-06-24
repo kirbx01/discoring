@@ -12,7 +12,6 @@ async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     if let Some(handler_lock) = manager.get(guild_id) {
         let mut handler = handler_lock.lock().await;
 
-        // Songbird fetches and streams via yt-dlp under the hood
         let source = songbird::input::YoutubeDl::new(
             reqwest::Client::new(),
             url,

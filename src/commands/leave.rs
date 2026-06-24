@@ -9,8 +9,8 @@ async fn leave(ctx: &Context, msg: &Message, _args: Args) -> CommandResult {
     let manager = songbird::get(ctx).await.unwrap();
 
     if manager.get(guild_id).is_some() {
-        // stop queue first, then disconnect
-        if let Some(handler_lock) = manager.get(guild_id) {
+        
+        if let Some(handler_lock) = manager.get(guild_id) { // stop queue first, then disconnect
             handler_lock.lock().await.queue().stop();
         }
 
