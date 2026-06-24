@@ -1,32 +1,29 @@
-#[command]
-async fn play(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let url = args.rest().trim().to_string();
-    if url.is_empty() {
-        msg.reply(ctx, "Provide a URL: `!play <url>`").await?;
-        return Ok(());
-    }
+use crate::{Context, Error};
+use songbird::input::YoutubeDl;
 
-    let guild_id = msg.guild_id.unwrap();
-    let manager = songbird::get(ctx).await.unwrap();
+#[poise::command(slash_command, prefix_command, guild_only)]
+pub async fn play(
+    ctx: Context<'_>,
+    #[description = "YouTube URL or search term"] url: String,
+) -> Result<(), Error> {
+    let guild_id = ctx.guild_id().unwrap();
+    let manager = songbird::get(ctx.serenity_context()).await.unwrap();
 
     if let Some(handler_lock) = manager.get(guild_id) {
         let mut handler = handler_lock.lock().await;
-
-        let source = songbird::input::YoutubeDl::new(
-            reqwest::Client::new(),
-            url,
-        );
-
+        let client = reqwest::Client::new();
+        let source = YoutubeDl::new(client, url);
         handler.enqueue_input(source.into()).await;
-        let queue_len = handler.queue().len();
-if queue_len > 1 {
-    msg.reply(ctx, format!("Added to queue! Position: {}", queue_len)).await?;
-} else {
-    msg.reply(ctx, "Now playing!").await?;
-}
-        msg.reply(ctx, "Now playing!").await?;
+
+        let len = handler.queue().len();
+        if len > 1 {
+            ctx.say(format!("Added to queue! Position: {}", len)).await?;
+        } else {
+            ctx.say("Now playing!").await?;
+        }
     } else {
-        msg.reply(ctx, "Not in a voice channel. Use `!join` first.").await?;
+        ctx.say("I'm not in a voice channel! Use `/join` first.").await?;
     }
+
     Ok(())
 }
