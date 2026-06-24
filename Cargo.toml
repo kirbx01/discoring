@@ -3,10 +3,7 @@ name = "discoring"
 version = "0.1.0"
 edition = "2021"
 
-[env]
-OPUS_NO_PKG = "1"
 [dependencies]
-audiopus_sys = { version = "0.2", features = ["build-source"] }
 poise        = "0.6"
 songbird     = { version = "0.5", features = ["serenity", "builtin-queue", "driver"] }
 tokio        = { version = "1", features = ["full"] }
