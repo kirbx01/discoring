@@ -1,5 +1,4 @@
 use crate::{Context, Error};
-use poise::serenity_prelude as serenity;
 
 #[poise::command(slash_command, prefix_command, guild_only)]
 pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
@@ -19,6 +18,7 @@ pub async fn join(ctx: Context<'_>) -> Result<(), Error> {
         }
     };
 
+    ctx.defer().await?;
     let manager = songbird::get(ctx.serenity_context()).await.unwrap();
     match manager.join(guild_id, channel_id).await {
         Ok(_) => ctx.say("Joined your voice channel!").await?,

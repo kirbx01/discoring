@@ -10,9 +10,15 @@ pub async fn play(
     let manager = songbird::get(ctx.serenity_context()).await.unwrap();
 
     if let Some(handler_lock) = manager.get(guild_id) {
+        ctx.defer().await?;
         let mut handler = handler_lock.lock().await;
         let client = reqwest::Client::new();
-        let source = YoutubeDl::new(client, url);
+        let source = if url.starts_with("http://") || url.starts_with("https://") {
+            YoutubeDl::new(client, url)
+        } else {
+            YoutubeDl::new_search(client, url)
+        };
+
         handler.enqueue_input(source.into()).await;
 
         let len = handler.queue().len();
