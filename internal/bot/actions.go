@@ -105,12 +105,19 @@ func runJoin(s *discordgo.Session, guildID, userID, _ string) string {
 	return "Joined your voice channel!"
 }
 
-func runPlay(_ *discordgo.Session, guildID, _, query string) string {
+func runPlay(s *discordgo.Session, guildID, userID, query string) string {
 	if query == "" {
 		return "Usage: !play <url or search term>"
 	}
 	p, ok := player.Find(guildID)
 	if !ok {
+		// Auto-join, so a plain !play just works after joining a voice channel.
+		if err := joinVoice(s, guildID, userID); err != nil {
+			return "I'm not in a voice channel! Use `!join` or `/join` first."
+		}
+		p, _ = player.Find(guildID)
+	}
+	if p == nil {
 		return "I'm not in a voice channel! Use `!join` or `/join` first."
 	}
 	pos := p.Add(&player.Track{Query: query})
@@ -129,9 +136,10 @@ func runSkip(_ *discordgo.Session, guildID, _, _ string) string {
 	return "Skipped!"
 }
 
-func runLeave(_ *discordgo.Session, guildID, _, _ string) string {
+func runLeave(s *discordgo.Session, guildID, _, _ string) string {
 	p, ok := player.Find(guildID)
 	if !ok {
+		disconnectVoice(s, guildID)
 		return "I'm not in a voice channel!"
 	}
 	p.StopAll()
