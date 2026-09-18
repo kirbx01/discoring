@@ -41,16 +41,33 @@ Same features: slash (`/`) and prefix (`!`) commands, per-guild queue, YouTube U
 
 ## Setup
 
+### 1. Install the audio tools
+
+`ffmpeg` and `yt-dlp` must be on `PATH`:
+
 ```sh
-cp .env.example .env        # put your bot token in .env
+sudo apt install ffmpeg
+pip install --upgrade yt-dlp
 ```
 
-Enable these privileged gateway intents in the Discord Developer Portal:
+Verify with `ffmpeg -version` and `yt-dlp --version`.
 
-- MESSAGE CONTENT
-- GUILD VOICE STATES
+### 2. Create a bot on Discord
 
-## How to run
+1. Create an application at the [Discord Developer Portal](https://discord.com/developers/applications).
+2. Add a bot user and copy its token.
+3. Enable the privileged gateway intents: **MESSAGE CONTENT** and **GUILD VOICE STATES**.
+4. Invite it with the OAuth2 URL generator: `bot` scope with **Connect**, **Speak**, **Send Messages**, **Read Message History**, and **Use Slash Commands** permissions.
+
+### 3. Configure
+
+```sh
+cp .env.example .env
+```
+
+Put your bot token in `.env`. Commands use the `!` prefix by default; override it with `BOT_PREFIX` (for example `BOT_PREFIX=$`) if you'd rather.
+
+### 4. Run
 
 ```sh
 go mod tidy
@@ -64,7 +81,7 @@ go build -o discoring ./cmd/discoring
 ./discoring
 ```
 
-The bot also needs `ffmpeg` and `yt-dlp` on `PATH`.
+Prefix (`!`) commands work instantly. Slash commands are registered globally and can take a few minutes to an hour to appear, so use `!` while testing.
 
 ## Commands
 
@@ -74,15 +91,6 @@ The bot also needs `ffmpeg` and `yt-dlp` on `PATH`.
 | `/play <query>` `!play <query>` | Play a YouTube URL or search term |
 | `/skip` `!skip` | Skip the current track |
 | `/leave` `!leave` | Leave and clear the queue |
-
-## Testing locally before publishing
-
-1. Create a bot at the [Discord Developer Portal](https://discord.com/developers/applications), copy its token, and enable the _MESSAGE CONTENT_ and _GUILD VOICE STATES_ privileged intents.
-2. Invite the bot to your own server: use the OAuth2 URL generator with the `bot` scope and the `Connect`, `Speak`, `Send Messages`, `Read Message History`, and `Use Slash Commands` permissions.
-3. `cp .env.example .env` and put the token in `.env`, then run `go run ./cmd/discoring`.
-4. Join a voice channel and test `!join`, `!play <song>`, `!skip`, `!leave`.
-
-Prefix (`!`) commands work instantly. Slash commands are registered globally and can take a few minutes to an hour to appear, so use `!` while testing.
 
 ## Audio quality
 
