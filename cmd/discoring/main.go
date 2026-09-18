@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -25,6 +26,13 @@ func main() {
 		discordgo.IntentsGuildVoiceStates |
 		discordgo.IntentsGuildMessages |
 		discordgo.IntentsMessageContent
+
+	s.LogLevel = discordgo.LogWarning
+	if lvl := os.Getenv("DISCORD_LOG"); lvl != "" {
+		if n, err := strconv.Atoi(lvl); err == nil {
+			s.LogLevel = n
+		}
+	}
 
 	s.AddHandler(func(s *discordgo.Session, _ *discordgo.Ready) {
 		bot.RegisterCommands(s)
