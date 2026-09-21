@@ -15,7 +15,7 @@
 >[!NOTE]
 > Since this is an old project almost 3 months ago it's totally buggy and has a lot to unfold since go rewrite has broken the orginal sound extraction so it really doesnt do as promised sound quality.
 
-A free Discord music bot in Go. Streams from YouTube with **crisp, lossless-to-Opus** audio: 48 kHz stereo at 256 kbps, encoded from raw PCM (`s16le`) so there are **no grainy artifacts**, and feed to Discord is buffer-paced to stay smooth and low-latency.
+An open source Discord music bot in Go. Streams from YouTube with **crisp, lossless-to-Opus** audio: 48 kHz stereo at 256 kbps, encoded from raw PCM (`s16le`) so there are **no grainy artifacts**, and feed to Discord is buffer-paced to stay smooth and low-latency.
 
 > **Migrated from Rust to Go.** The original bot was built with `poise` + `serenity` + `songbird` (`Cargo.toml`, `src/`). It was rewritten in Go with `bwmarrin/discordgo`, `joho/godotenv`, and `layeh.com/gopus`.
 
